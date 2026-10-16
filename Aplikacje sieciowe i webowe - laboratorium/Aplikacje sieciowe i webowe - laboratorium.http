@@ -1,0 +1,6 @@
+@Aplikacje_sieciowe_i_webowe___laboratorium_HostAddress = http://localhost:5015
+
+GET {{Aplikacje_sieciowe_i_webowe___laboratorium_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

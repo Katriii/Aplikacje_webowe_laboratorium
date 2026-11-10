@@ -2,10 +2,11 @@ export interface Car {
     id: string;
     brand: string;
     model: string;
+    productionDate: string;
     doorsNumber: number;
     luggageCapacity: number;
     engineCapacity: number;
-    productionDate: string;
+    fuelType: number;
     averageFuelConsumption: number;
     bodyType: number;
 }

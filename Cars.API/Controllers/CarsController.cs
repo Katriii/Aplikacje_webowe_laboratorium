@@ -2,11 +2,13 @@
 using Cars.Application.Cars;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cars.API.Controllers;
 
+[Authorize]
 public class CarsController : BaseApiController
 {
     private readonly ISender _sender;
@@ -58,6 +60,7 @@ public class CarsController : BaseApiController
     }
 
     // DELETE - api/cars/{id}
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteCar(Guid id)
     {

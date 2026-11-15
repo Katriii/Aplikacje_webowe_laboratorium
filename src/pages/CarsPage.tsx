@@ -4,6 +4,7 @@ import type { Car } from "../models/Car";
 import axios from 'axios';
 import { getCars, deleteCar } from "../services/carService";
 import { useCarUiStore } from '../stores/useCarUiStore';
+import { useAuthStore } from "../stores/useAuthStore";
 
 export default function CarsPage() {
     const [cars, setCars] = useState<Car[]>([]);
@@ -17,11 +18,14 @@ export default function CarsPage() {
     const showFavoritesOnly = useCarUiStore((state) => state.showFavoritesOnly);
     const setShowFavoritesOnly = useCarUiStore((state) => state.setShowFavoritesOnly);
 
-    const favoriteCardIds = useCarUiStore((state) => state.favoriteCarIds);
+    const user = useAuthStore((state) => state.user);
+
+    const favoriteCarIdsByUser = useCarUiStore((state) => state.favoriteCarIdsByUser);
+    const favoriteCarIds = user ? favoriteCarIdsByUser[user.id] ?? [] : [];
 
     const visibleCars = cars.filter((car) => {
         const matchesSearch = car.brand.toLowerCase().includes(normalizedSearch) || car.model.toLowerCase().includes(normalizedSearch);
-        const matchesFavorite = !showFavoritesOnly || favoriteCardIds.includes(car.id);
+        const matchesFavorite = !showFavoritesOnly || favoriteCarIds.includes(car.id);
 
         return (matchesSearch && matchesFavorite);
     })
@@ -30,7 +34,7 @@ export default function CarsPage() {
     const removeFavorite = useCarUiStore((state) => state.removeFavorite);
 
     function isFavorite(id: string): boolean {
-        return favoriteCardIds.includes(id);
+        return favoriteCarIds.includes(id);
     }
 
     useEffect(() => {
@@ -73,18 +77,29 @@ export default function CarsPage() {
         }
         else {
             await deleteCar(id)
-            removeFavorite(id);
+            if (user) {removeFavorite(user.id, id)};
             setCars(cars.filter((car) => car.id !== id))
         }
     }
 
     if (isLoading) {
-        return <p>Ładowanie danych...</p>;
+        return (
+            <section className="main-section">
+                <p>Ładowanie danych...</p>
+            </section>
+        )
     }
 
     if (error) {
-        return <p className="error">Wystąpił błąd: {error}</p>
+        return (
+            <section className="main-section">
+                <p className="error-message">Wystąpił błąd: {error}</p>
+                <br/>
+                <Link className="form-back-btn" to={`/`}>Powrót do strony głównej</Link>
+            </section> 
+        )
     }
+
 
     if (cars.length === 0) {
         return <p>Nie znaleziono samochodów.</p>;
@@ -109,7 +124,7 @@ export default function CarsPage() {
                     <div className="car-item-header">
                         <h2 className="car-item-title">{car.brand} {car.model}</h2>
                         <button type="button" className="favorite-button"
-                            onClick={() => toggleFavorite(car.id)}>
+                            onClick={() => {if(user) {toggleFavorite(user.id, car.id)}}}>
                             {isFavorite(car.id) ? "⭐" : "☆"}
                         </button>
                     </div>

@@ -1,0 +1,11 @@
+export { default as HomePage } from "./HomePage";
+export { default as CarsPage } from "./CarsPage";
+export { default as CarDetailsPage } from "./CarDetailsPage";
+export { default as CreateCarPage } from "./CreateCarPage";
+export { default as EditCarPage } from "./EditCarPage";
+export { default as NotFoundPage } from "./NotFoundPage";
+export { default as LoginPage } from "./LoginPage";
+export { default as ConfirmEmailPage } from "./ConfirmEmailPage";
+export { default as ResetPasswordPage } from "./ResetPasswordPage";
+export { default as ForgotPasswordPage } from "./ForgotPasswordPage";
+export { default as RegisterPage } from "./RegisterPage";

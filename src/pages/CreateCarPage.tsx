@@ -13,7 +13,7 @@ const initialCarFormData: NewCar = {
     engineCapacity: 0,
     fuelType: 0,
     averageFuelConsumption: 0,
-    bodyType: 0,
+    bodyType: 0
 };
 
 export default function CreateCarPage() {
@@ -23,12 +23,12 @@ export default function CreateCarPage() {
 
     // Funkcja wykonywana, gdy użytkownik zmienia zawartość któregoś pola formularza
     function handleChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
-    const { name, value } = event.target;
+        const { name, value } = event.target;
 
-    setFormData((currentFormData) => ({
-        ...currentFormData,
-        [name]: value, 
-    }));
+        setFormData((currentFormData) => ({
+            ...currentFormData,
+            [name]: value, 
+        }));
     }
 
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
@@ -56,7 +56,10 @@ export default function CreateCarPage() {
         catch (caughtError) {
             setIsLoading(false);
             if (axios.isCancel(caughtError)) { return; }
-            if (caughtError instanceof Error) {
+            if (axios.isAxiosError(caughtError)) {
+                setError(caughtError.response?.data);
+            }
+            else if (caughtError instanceof Error) {
                 setError(caughtError.message);
             }
             else {
@@ -66,12 +69,23 @@ export default function CreateCarPage() {
     }
 
     if (isLoading) {
-        return <p>Wysyłanie...</p>;
+        return (
+            <section className="main-section">
+                <p>Wysyłanie...</p>
+            </section>
+        )
     }
 
     if (error) {
-        return <p className="error">Wystąpił błąd: {error}</p>
+        return (
+            <section className="main-section">
+                <p className="error-message">Wystąpił błąd: {error}</p>
+                <br/>
+                <Link className="form-back-btn" to={`/`}>Powrót do strony głównej</Link>
+            </section> 
+        )
     }
+
 
     return (
     <section className="main-section">

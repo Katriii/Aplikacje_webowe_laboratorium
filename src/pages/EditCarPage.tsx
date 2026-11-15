@@ -111,12 +111,23 @@ export default function EditCarPage() {
     }
 
     if (isLoading) {
-        return <p>Ładowanie...</p>;
+        return (
+            <section className="main-section">
+                <p>Ładowanie danych...</p>
+            </section>
+        )
     }
 
     if (error) {
-        return <p className="error">Wystąpił błąd: {error}</p>
+        return (
+            <section className="main-section">
+                <p className="error-message">Wystąpił błąd: {error}</p>
+                <br/>
+                <Link className="form-back-btn" to={`/`}>Powrót do strony głównej</Link>
+            </section> 
+        )
     }
+
 
     return (
     <section className="main-section">

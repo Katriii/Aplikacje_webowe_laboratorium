@@ -21,18 +21,44 @@ body {
   background-color: #1e293b; 
   color: #ffffff;
   padding: 1rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
 } 
+
+.nav-left {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.nav-center {
+  display: flex;  
+  justify-content: center;
+}
+
+.nav-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.nav-left, 
+.nav-right {
+  flex: 1;
+}
 
 .nav-text {
   color: #ffffff;
   text-decoration: none;
   margin-right: 1.5rem;
   font-weight: 500;
+  font-size: 1rem;
   transition: opacity 0.2s;
+}
+
+.nav-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.0;
 }
 
 .nav-text-active {
@@ -135,13 +161,16 @@ body {
   font-weight: 500;
 }
 
-.car-item-delete-btn {
+button {
   background: none;
-  border: none;
-  color: #dc2626;
-  cursor: pointer;
-  font-weight: 500;
   padding: 0;
+  border: none;
+  cursor: pointer;
+}
+
+.car-item-delete-btn {
+  color: #dc2626;
+  font-weight: 500;
   font-size: 0.9rem;
 }
 
@@ -183,7 +212,7 @@ body {
 .form-input,
 .form-select {
   padding: 0.5rem 0.5rem;
-  width: 150px;
+  width: 200px;
   margin: 0.15rem 10px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
@@ -210,7 +239,6 @@ body {
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
-  margin-top: 1rem;
   width: 100%;
 }
 
@@ -230,5 +258,15 @@ body {
 
 .main-page-section p {
   margin: 10px;
+}
+
+.login-item-actions {
+  margin-top: 10px;
+}
+
+.error-message {
+  font-size: 16px;
+  font-weight: 500px;
+  color: maroon;
 }
 

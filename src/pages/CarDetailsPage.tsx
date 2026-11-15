@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router";
 import type { Car } from "../models/Car";
 import { getCarsById } from "../services/carService";
 import { useCarUiStore } from "../stores/useCarUiStore";
+import { useAuthStore } from "../stores/useAuthStore";
 import axios from 'axios';
 
 export default function CarDetailsPage() {
@@ -11,7 +12,10 @@ export default function CarDetailsPage() {
     const [error, setError] = useState<string | null>(null);
     const { id } = useParams();
     
-    const favoriteCarIds = useCarUiStore((state) => state.favoriteCarIds);
+    const user = useAuthStore((state) => state.user);
+
+    const favoriteCarIdsByUser = useCarUiStore((state) => state.favoriteCarIdsByUser);
+    const favoriteCarIds = user ? favoriteCarIdsByUser[user.id] ?? [] : [];
     const toggleFavorite = useCarUiStore((state) => state.toggleFavorite);
 
     useEffect(() => {
@@ -53,16 +57,33 @@ export default function CarDetailsPage() {
     }, []);
 
     if (!car) {
-        return <p>Samochód o zadanym id nie istnieje.</p>;
+        return (
+            <section className="main-section">
+                <p>Samochód o zadanym id nie istnieje.</p>
+                <br/>
+                <Link className="form-back-btn" to={`/`}>Powrót do strony głównej</Link>
+            </section>
+        )
     }
 
     if (isLoading) {
-        return <p>Ładowanie danych...</p>;
+        return (
+            <section className="main-section">
+                <p>Ładowanie danych...</p>
+            </section>
+        )
     }
 
     if (error) {
-        return <p className="error">Wystąpił błąd: {error}</p>
+        return (
+            <section className="main-section">
+                <p className="error-message">Wystąpił błąd: {error}</p>
+                <br/>
+                <Link className="form-back-btn" to={`/`}>Powrót do strony głównej</Link>
+            </section> 
+        )
     }
+
 
     const isFavorite = favoriteCarIds.includes(car.id);
 
@@ -73,7 +94,7 @@ export default function CarDetailsPage() {
                 <div className="car-item-header">
                     <h2 className="car-item-title">{car.brand} {car.model}</h2>
                     <button type="button" className="favorite-button"
-                        onClick={() => toggleFavorite(car.id)}>
+                        onClick={() => {if(user) {toggleFavorite(user.id, car.id)}}}>
                         {isFavorite ? "⭐" : "☆"}
                     </button>
                 </div>
@@ -94,30 +115,6 @@ export default function CarDetailsPage() {
                     </Link>
                 </div>
             </article>
-            {/* <article key={car.id} className="car-item">
-                    <div className="car-item-header">
-                        <h2 className="car-item-title">{car.brand} {car.model}</h2>
-                        <button type="button" 
-                            className={isFavorite(car.id) 
-                                ? "favorite-button active-favorite"
-                                : "favorite-button"
-                            } 
-                            onClick={() => toggleFavorite(car.id)}>
-                            {isFavorite(car.id) ? "⭐" : "☆"}
-                        </button>
-                    </div>
-                    <p>Rok produkcji: {car.productionDate}</p>
-                    <p>Średnie spalanie: {car.averageFuelConsumption}</p>
-                    <div className="car-item-actions">
-                        <Link className="car-item-details-btn" to={`/cars/${car.id}`}>
-                            Szczegóły
-                        </Link>
-                        {" - "}
-                        <button className="car-item-delete-btn" onClick={ () => onDeleteCar(car.id) }>
-                            Usuń
-                        </button>
-                    </div>
-                </article> */}
         </section>
     )
 }

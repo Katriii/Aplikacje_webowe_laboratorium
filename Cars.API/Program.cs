@@ -94,6 +94,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 app.UseCors("CorsPolicy");
+app.UseStaticFiles();
+app.UseRouting();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -107,11 +109,14 @@ try
 {
     var context = services.GetRequiredService<DataContext>();
     await context.Database.MigrateAsync();
-    await Seed.SeedData(context); // seedowanie
+    await Seed.SeedData(context);
+
+    await FeatureSeed.SeedAsync(context);
 
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     await IdentitySeed.SeedAsync(userManager, roleManager);
+
 }
 
 catch (Exception ex)
